@@ -1,6 +1,6 @@
 FROM centos:7
 #设置作者
-MAINTAINER ming_iot
+#MAINTAINER 
 #设置环境变量
 ENV HOME /home/polaris
 RUN mkdir $HOME
@@ -9,7 +9,7 @@ RUN mkdir $HOME
 WORKDIR $HOME
 
 #复制文件
-COPY polaris $HOME/
+#COPY polaris $HOME/
 # 安装依赖
 RUN yum install lsof unzip net-tools crontabs -y
 
@@ -19,3 +19,4 @@ EXPOSE 8090
 EXPOSE 9090
 EXPOSE 9091
 CMD	bash install.sh && /bin/bash
+
