@@ -1,6 +1,6 @@
 FROM centos:7
 #设置作者
-#MAINTAINER 
+MAINTAINER mm
 #设置环境变量
 ENV HOME /home/polaris
 RUN mkdir $HOME
@@ -9,7 +9,7 @@ RUN mkdir $HOME
 WORKDIR $HOME
 
 #复制文件
-#COPY polaris $HOME/
+COPY . $HOME/
 # 安装依赖
 RUN yum install lsof unzip net-tools crontabs -y
 
