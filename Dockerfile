@@ -1,22 +1,36 @@
-FROM centos:7
-#设置作者
-MAINTAINER mm
-#设置环境变量
-ENV HOME /home/polaris
-RUN mkdir $HOME
+# Tencent is pleased to support the open source community by making Polaris available.
+#
+# Copyright (C) 2019 THL A29 Limited, a Tencent company. All rights reserved.
+#
+# Licensed under the BSD 3-Clause License (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://opensource.org/licenses/BSD-3-Clause
+#
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
 
-#设置工作目录
-WORKDIR $HOME
+FROM alpine:3.13.6
 
-#复制文件
-COPY . $HOME/
-# 安装依赖
-RUN yum install lsof unzip net-tools crontabs -y
+RUN sed -i 's!http://dl-cdn.alpinelinux.org/!https://mirrors.tencent.com/!g' /etc/apk/repositories
 
-#声明使用的端口，需要-p去绑定宿主机否则将随机绑定
-EXPOSE 8080
-EXPOSE 8090
-EXPOSE 9090
-EXPOSE 9091
-CMD	bash install.sh && /bin/bash
+RUN set -eux && \
+    apk add tcpdump && \
+    apk add tzdata && \
+    apk add busybox-extras && \
+    apk add curl && \
+    apk add bash && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone && \
+    date
 
+ARG TARGETARCH
+COPY polaris-server-${TARGETARCH} /root/polaris-server
+COPY ./release/conf /root/conf
+
+WORKDIR /root
+
+CMD ["/root/polaris-server", "start"]
